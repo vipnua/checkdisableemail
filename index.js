@@ -115,21 +115,26 @@ async function checkEmailAvailability(email) {
     };
 }
 
+let verifiedEmailList = [];
+
 app.post('/check-mail', async (req, res) => {
     const emailList = req.body.email.split(" ");
     try {
-      const results = [];
-      for (let email of emailList) {
-        const result = await checkEmailAvailability(email);
-        results.push(result);
-      }
-  
-      res.json(results);
+        const results = [];
+        for (let email of emailList) {
+            if (!verifiedEmailList.includes(email)) {
+                const result = await checkEmailAvailability(email);
+                results.push(result);
+                verifiedEmailList.push(email);
+            }
+        }
+        res.json(results);
+        verifiedEmailList = []
     } catch (error) {
-      res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
-  });
-  
+});
+
 
 
 app.use('*', (req, res) => {
