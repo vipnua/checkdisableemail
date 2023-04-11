@@ -19,8 +19,12 @@
     "email-check": "^1.1.0",
     "email-validator": "^2.0.4",
     "express": "^4.18.2",
+    "geoip-lite": "^1.4.7",
+    "http": "^0.0.1-security",
     "imap": "^0.8.19",
     "imap-simple": "^5.1.0",
+    "ip": "^1.1.8",
+    "ip-address": "^8.1.0",
     "mailparser": "^3.6.4",
     "nodemailer": "^6.9.1",
     "smtp-protocol": "^2.4.7"
