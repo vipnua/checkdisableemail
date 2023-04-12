@@ -25,6 +25,7 @@
     "imap-simple": "^5.1.0",
     "ip": "^1.1.8",
     "ip-address": "^8.1.0",
+    "ipaddr.js": "^2.0.1",
     "mailparser": "^3.6.4",
     "nodemailer": "^6.9.1",
     "smtp-protocol": "^2.4.7"

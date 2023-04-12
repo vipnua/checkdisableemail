@@ -21,29 +21,29 @@ app.use(function (req, res, next) {
 app.get('/check-ip', checkIpMiddleware, async (req,res)=>{
     const clientIp = req.clientIp;
     const dataIp = {
-        geoIp : geoIp(clientIp),
+        geoIp : geoIp('2001:ee0:46e2:14c0:4187:2f49:123f:151b'),
         ipAddress : clientIp
     }
    return res.json(dataIp);
 })
-let verifiedEmailList = [];
 app.post('/check-mail', async (req, res) => {
-    const emailList = req.body.email.split(" ");
+    const emailList = req.body.email.split(" ").join("\n").split("\n");
+    const verifiedEmailList = [];
     try {
-        const results = [];
-        for (let email of emailList) {
-            if (!verifiedEmailList.includes(email)) {
-                const result = await checkEmailAvailability(email);
-                results.push(result);
-                verifiedEmailList.push(email);
-            }
+      const results = [];
+      for (let email of emailList) {
+        if (!verifiedEmailList.includes(email)) {
+          const result = await checkEmailAvailability(email);
+          results.push(result);
+          verifiedEmailList.push(email);
         }
-        res.json(results);
-        verifiedEmailList = []
+      }
+      res.json(results);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-});
+  });
+  
 
 app.use('*', (req, res) => {
     res.status(404).json({ error: 'Not found' });

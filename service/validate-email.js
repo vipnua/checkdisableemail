@@ -92,7 +92,7 @@ async function checkEmailAvailability(email) {
     }
 
     if (!(await checkEmailIsLive(email))) {
-        return { status: 'Email is disable or does not exist', email: email };
+        return { status: 'Email does not exist', email: email };
     }
 
     return { status: 'Email is valid', email: email };
