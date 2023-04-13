@@ -1,10 +1,10 @@
 const express = require("express")
 const app = express();
 app.use(express.json());
+const geoIp = require('./service/geoIp')
 const checkEmailAvailability = require('./service/validate-email');
-const checkIpMiddleware = require('./service/checkip');
-const geoIp = require("./service/geoIp");
-app.use(checkIpMiddleware);
+const checkProxy = require('./service/check-proxy');
+const request = require('request')
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
@@ -17,15 +17,36 @@ app.use(function (req, res, next) {
         next();
     }
 });
-
-app.get('/check-ip', checkIpMiddleware, async (req,res)=>{
-    const clientIp = req.clientIp;
-    const dataIp = {
-        geoIp : geoIp('2001:ee0:46e2:14c0:4187:2f49:123f:151b'),
-        ipAddress : clientIp
-    }
-   return res.json(dataIp);
+app.get('/api/proxy',async(req,res)=>{
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const geo = geoIp(clientIp)
+   const data ={ip:clientIp,geo} ;
+    res.send(data);
 })
+app.post('/check-proxy', async (req, res) => {
+    try {
+      const { proxy, proxyUser, proxyPass } = req.body;
+  
+      const options = {
+        url: 'http://localhost:9000/api/proxy',
+        proxy: `http://${proxyUser}:${proxyPass}@${proxy}`,
+      };
+  
+      // Make request to get IP address using proxy
+      request(options, (error, response, body) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send('Error');
+        }
+        console.log(`Proxy IP address: ${body}`);
+        res.send(body);
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error');
+    }
+  });
+
 app.post('/check-mail', async (req, res) => {
     const emailList = req.body.email.split(" ").join("\n").split("\n");
     const verifiedEmailList = [];

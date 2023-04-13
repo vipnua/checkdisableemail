@@ -28,6 +28,7 @@
     "ipaddr.js": "^2.0.1",
     "mailparser": "^3.6.4",
     "nodemailer": "^6.9.1",
+    "request": "^2.88.2",
     "smtp-protocol": "^2.4.7"
   }
 }
